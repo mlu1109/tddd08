@@ -1,5 +1,5 @@
 % Union
-% Assumes A, B are sorted lists with disjunct elements
+% Assumes A, B are sorted lists without duplicate elements (set)
 union([], [], []).
 union([HA|TA], [], [HA|TA]).
 union([], [HB|TB], [HB|TB]).
@@ -13,7 +13,7 @@ union([H|TA], [H|TB], [H|Res]) :-
   union(TA, TB, Res).
 
 % Intersection
-% Assumes A, B are sorted lists with disjunct elements
+% Assumes A, B are sorted lists without duplicate elements (set)
 intersection([], [], []).
 intersection([_HA|_TA], [], []).
 intersection([], [_HB|_TB], []).
@@ -27,7 +27,7 @@ intersection([HA|TA], [HB|TB], Res) :-
   intersection([HA|TA], TB, Res).
 
 % Powerset
-% Assumes A, B are sorted lists with disjunct elements
+% Assumes A, B are sorted lists without duplicate elements (set)
 subset([], []).
 subset([H|TA], [H|TB]) :-
   subset(TA, TB).
