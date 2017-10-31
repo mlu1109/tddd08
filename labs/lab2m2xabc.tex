@@ -1,0 +1,12 @@
+\begin{tikzpicture}[sibling distance=10em, align=center,
+  every node/.style = {shape=rectangle, rounded corners,
+    draw, align=center,
+    top color=white, bottom color=green!10}]]
+  \node {$m_2(X,[a,b,c])$}
+    child { node {\underline{$a(M, [L], [b,c])$}, $m_2(X, M)$}
+      child { node {\scriptsize $M/[b], L/c, X/X_1$\\$m2(X_1, [b])$}
+        child { node {\underline{$a(M_1,[L_1],[])$},$\ldots$\\$\square$}}
+        child { node {\scriptsize $X_1/b$\\$m_2(b, [b])$\\$\blacksquare$}}
+      }
+    };
+\end{tikzpicture}

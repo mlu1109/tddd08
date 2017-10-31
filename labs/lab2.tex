@@ -1,0 +1,110 @@
+\section{Lab 2}
+\subsection{Exercise 2.1}
+\lstinputlisting[language=Prolog]{./2/ex1.pl}
+\pagebreak
+\subsubsection{Queries}
+\begin{lstlisting}[language=Prolog]
+| ?- sorted([1,2,3]).
+yes
+| ?- sorted([1,3,2]).
+no
+| ?- qsort([2,5,1,6,8,3,4], Sorted).
+Sorted = [1,2,3,4,5,6,8] ? ;
+no
+| ?- ssort([2,5,1,6,8,3,4], Sorted).
+Sorted = [1,2,3,4,5,6,8] ? ;
+no
+\end{lstlisting}
+\subsection{Exercise 2.2}
+\lstinputlisting[language=Prolog]{./2/ex2.pl}
+\pagebreak
+\subsubsection{Questions}
+\begin{itemize}
+  \item Examine how the execution of the following queries is affected by the ordering
+  of the clauses and the premises within clauses.
+  \begin{lstlisting}[language=Prolog]
+    | ?- middle(X, [a,b,c]).
+    | ?- middle(a, X).
+  \end{lstlisting}
+  Try all four possible permutations of middle/2 and (1) explain what happens,
+  (2) why and (3) sketch the SLD tree (you don’t have to draw the whole
+  tree...). Don’t forget to explain what happens when you ask for more than
+  one answer! Which version is preferable for each type of query?
+\end{itemize}
+\begin{enumerate}
+  \item The execution path will differ between permutations. This is because Prolog choses which premise to be resolved depending on the order in the rule and which rule or fact to use depending on the ordering of the program's rules and facts.
+  \item For the program - a rule or fact that precedes (read top to down) another rule or fact with the same name and arity will be used first. For the premises of a rule - a premise that precedes (read left-right) another premise will be resolved first.
+  \item The SLD-trees for each permutation and query is drawn in figure \ref{xabc}, \ref{cx1} and \ref{cx2}. An underlined clause is selected for resolving. A successful leaf is marked with $\blacksquare$ and an unsuccessful with $\square$.
+  
+  When asked for additional answers Prolog backtracks from the last given answer to the next closest possibility. For instance, in figure \ref{m1xabc} the first given answer is the leftmost leaf, when asked for more answers Prolog backtracks, tries the other rule for the query which is unsuccessful. Prolog then backtracks all the way to the root since no other possible branches are found on.
+
+  Because of Prolog's selection rule the leftmost child of an SLD-tree is reached first. This means that middle1 (figure \ref{m1xabc}) is the most efficient permutation for the query middle(X, [a,b,c]). Although middle3 (figure \ref{m3xabc}) reaches the first answer as quickly as middle1 it will continue to loop forever if we ask for more answers. This is due to the ordering of the clauses of middle3. Middle is always an unconstrained variable which, in this case, produces an infinite number of possibilities to try.
+
+  The most efficient permutation for middle(a, X) is middle3 which always reaches a successful leaf (neglecting what happens during the resolving of append). All permutations for this query except middle4 produces an infinite amount of answers. Middle4 never reaches a leaf.
+
+
+\end{enumerate}
+
+\begin{figure}[H]
+  \centering
+  \subfloat[{middle1(X, [a,b,c])}]{\label{m1xabc}\input{lab2m1xabc.tex}}\hspace{0.5cm} 
+  \subfloat[{middle2(X, [a,b,c])}]{\label{m2xabc}\input{lab2m2xabc.tex}}\\
+  \subfloat[{middle3(X, [a,b,c])}]{\label{m3xabc}\input{lab2m3xabc.tex}}\hspace{0.2cm}
+  \subfloat[{middle4(X, [a,b,c])}]{\label{m4xabc}\input{lab2m4xabc.tex}}
+  \caption{SLD-trees for queries with the arguments (X, [a,b,c])}
+  \label{xabc}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{adjustwidth}{\oddsidemargin-0.8in}{-\rightmargin}    
+  \subfloat[{middle1(c, X)}]{\label{m1xabc}\input{lab2m1ax.tex}}\\
+  \end{adjustwidth}
+  \begin{adjustwidth}{-\oddsidemargin-0.15in}{-\rightmargin}        
+  \vspace{1cm}\subfloat[{middle2(c, X)}]{\label{m2xabc}\input{lab2m2ax.tex}}\\
+  \end{adjustwidth}
+  \caption{SLD-trees for queries with the arguments (c, X)}
+  \label{cx1}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{adjustwidth}{\oddsidemargin-1.5in}{-\rightmargin}
+  \subfloat[{middle3(c, X)}]{\label{m3xabc}\input{lab2m3ax.tex}}
+  \subfloat[{middle4(c, X)}]{\label{m4xabc}\input{lab2m4ax.tex}}
+  \end{adjustwidth}
+  \caption{SLD-trees for queries with the arguments (c, X)}
+  \label{cx2}
+\end{figure}
+
+\pagebreak
+
+\subsection{Exercise 2.3}
+\lstinputlisting[language=Prolog]{./2/ex3.pl}
+\subsubsection{Queries}
+\begin{lstlisting}[language=Prolog]
+| ?- execute([[x, 3]], seq(set(id(y),num(1)),
+  while(id(x) > num(1),
+    seq(set(id(y), id(y) * id(x)),
+      set(id(x), id(x) - num(1))
+    )
+  )
+), Sj).
+Sj = [[x,1],[y,6]] ?
+yes
+\end{lstlisting}
+
+\pagebreak
+
+\subsection{Exercise 2.4}
+\lstinputlisting[language=Prolog]{./2/ex4.pl}
+\subsubsection{Queries}
+\begin{lstlisting}[language=Prolog]
+| ?- union([a, b, c, d, f], [e, f, g], Res).
+Res = [a,b,c,d,e,f,g] ? ;
+no
+| ?- intersection([a, d], [a, b, c, d], Res).
+Res = [a,d] ? ;
+no
+| ?- powerset([a, b, c], Res).
+Res = [[],[a],[a,b],[a,b,c],[a,c],[b],[b,c],[c]] ? ;
+no
+\end{lstlisting}

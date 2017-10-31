@@ -1,0 +1,59 @@
+\section{Lab 1}
+\subsection{Exercise 1.1}
+\lstinputlisting[language=Prolog]{./1/ex1.pl}
+\subsubsection{Queries}
+\textbf{Who is happy?}
+\begin{lstlisting}
+| ?- happy(X).
+X = nisse ? ;
+X = bettan ? ;
+no
+\end{lstlisting}
+\textbf{Who likes who?}
+\begin{lstlisting}[language=Prolog]
+| ?- likes(X, Y).
+X = nisse,
+Y = ulrika ? ;
+X = peter,
+Y = ulrika ? ;
+X = bosse,
+Y = ulrika ? ;
+no
+\end{lstlisting}
+\textbf{How many persons like Ulrika?}
+\begin{lstlisting}[language=Prolog]
+| ?- findall(X, likes(X, ulrika), Z), length(Z, N).
+Z = [nisse,peter,bosse],
+N = 3 ? ;
+no
+\end{lstlisting}
+\pagebreak
+\subsubsection{Questions}
+\begin{itemize}
+  \item In what way should you arrange the clauses (rules and facts) in the program?
+  \begin{itemize}
+    \item Prolog will execute rules or facts with same name from top to down which means placing a fact before a rule is more efficient. This is because the fact gives a truth value while the truth value of a rule depends on other rules or facts.
+
+    Readability is increased by grouping same named rules and facts together. 
+  \end{itemize}
+  \item In what way should the premises of rules be arranged?
+  \begin{itemize}
+    \item Prolog will execute the premises of a rule from left to right. This means that facts should precede rules because verifying a rule would lead to a new node in the SLD-tree even if some fact of the group of premises is false. If a fact is refuted the branch fails and processing stops. Same reasoning could be applied to the ordering of rules, computationally simple rules should generally precede computationally complex ones.
+  \end{itemize}
+\end{itemize}
+
+\pagebreak
+
+\subsection{Exercise 1.2}
+\lstinputlisting[language=Prolog]{./1/ex2.pl}
+\subsubsection{Queries}
+\begin{lstlisting}[language=Prolog]
+| ?- npath(a, g, L).
+L = 5 ? ;
+L = 4 ? ;
+L = 5 ? ;
+L = 4 ? ;
+L = 3 ? ;
+L = 4 ? ;
+no
+\end{lstlisting} 

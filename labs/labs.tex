@@ -1,0 +1,87 @@
+\documentclass{article}
+% Följande rad ska göra det möjligt att använda svenska bokstäver, som å, ä, ö. Kravet är 
+% då att filen sparas i UTF-8-format. Om detta inte fungerar för dig, så kan du alltid 
+% använda dig av {\aa} för å, \''a för ä och \''o för ö.
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+% Följande väljer typsnitt som är kloner av Times New Roman, Helvetica och lämpliga till
+% dem anpassade matematiktypsnitt.
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+% Figurer
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{tikz}
+\usepackage{chngpage}
+\usepackage{calc}
+
+% Tabs
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+% Links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\rightmark}
+\fancyhead[R]{\thepage}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{myPrologstyle}
+{
+    language=Prolog,
+    basicstyle = \ttfamily\color{black},
+    %moredelim = [s][\color{blue}]{(}{)},
+    literate =
+        {:-}{{\textcolor{red}{:-}}}2
+        {,}{{\textcolor{red}{,}}}1
+        {.}{{\textcolor{red}{.}}}1
+        {;}{{\textcolor{red}{;}}}1
+        {-->}{{\textcolor{red}{{-}->}}}3,
+    numbers=left,
+    stepnumber=1,
+    %fontsize=\small,
+    numberstyle=\color{codegray},
+}
+\lstset{style=myPrologstyle}
+
+
+\begin{document}
+
+\tableofcontents
+
+\pagebreak
+
+\input{lab1.tex}
+
+\pagebreak
+
+\input{lab2.tex}
+
+\pagebreak
+
+\input{lab3.tex}
+
+\pagebreak
+
+\input{lab4.tex}
+
+\pagebreak
+
+\input{lab5.tex}
+
+\end{document}

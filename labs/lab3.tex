@@ -1,0 +1,11 @@
+\section{Lab 3}
+\subsection{Exercise 1}
+\lstinputlisting[language=Prolog]{./3/ex1.pl}
+\subsubsection{Queries}
+\begin{lstlisting}[language=Prolog]
+| ?- run([[x,3]],
+"y:=1; z:=0; while x>z do z:=z+1; y:=y*z od",
+Res).
+Res = [[x,3],[y,6],[z,3]] ?
+yes
+\end{lstlisting}

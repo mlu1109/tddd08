@@ -1,0 +1,449 @@
+% This is a summary of the keywords given for the course TDDD08.
+% There is no guarantee that ANYTHING in this text is correct.
+
+\documentclass{article}
+% Följande rad ska göra det möjligt att använda svenska bokstäver, som å, ä, ö. Kravet är 
+% då att filen sparas i UTF-8-format. Om detta inte fungerar för dig, så kan du alltid 
+% använda dig av {\aa} för å, \''a för ä och \''o för ö.
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+% Följande väljer typsnitt som är kloner av Times New Roman, Helvetica och lämpliga till
+% dem anpassade matematiktypsnitt.
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\usepackage{qtree}
+% Tabs
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+% Links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+% Titlar
+\usepackage{titlesec}
+\usepackage{etoolbox} % https://bugs.launchpad.net/ubuntu/+source/texlive-extra/+bug/1574052
+\makeatletter
+\patchcmd{\ttlh@hang}{\parindent\z@}{\parindent\z@\leavevmode}{}{}
+\patchcmd{\ttlh@hang}{\noindent}{}{}{}
+\makeatother
+\titleformat{\section}
+{\fontsize{14}{15}\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+{\fontsize{10}{15}\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+{\fontsize{9}{15}\bfseries}{\thesubsubsection}{1em}{}
+
+\usepackage[]{algorithm2e}
+
+\usepackage{array}
+
+\usepackage[parfill]{parskip} % Separate paragraphs by linebreak instead of indent
+
+\usepackage{url}
+
+\begin{document}
+
+\textbf{Disclaimer}
+
+This is an attempt on a summary of the keywords\footnote{\url{https://www.ida.liu.se/~TDDD08/misc/keywords.txt}} given for the course TDDD08. For your own sake, don't assume that anything is correct. The explanations have been taken from the course book\footnote{\url{http://www.ida.liu.se/~ulfni/lpp/}} and the lectures\footnote{\url{https://www.ida.liu.se/~TDDD08/lectures.shtml}}.
+
+\tableofcontents
+
+\section{Logic}
+
+\subsection{Language}
+In the formal language of predicate logic objects are represented by terms.
+
+In natural language only certain combinations of words are meaningful sentences.
+The counterpart of sentences in predicate logic are special constructs built from terms.
+\subsubsection{Term}
+A term is an element of the language,
+\begin{itemize}
+    \item All variables are terms
+    \item All constants are terms
+    \item If $f$ is an n-ary functor and $t_1,\ldots,t_n$ are terms is $f(t_1,\ldots,t_n)$ a term
+\end{itemize}
+
+\subsubsection{Functor}
+\begin{itemize}
+    \item A functor takes $n$ terms and evaluates to a new term
+    \item A constant can be seen as a functor without arguments
+\end{itemize}
+
+\subsubsection{Predicate}
+A predicate takes $n$ terms and evaluates to a truth-value
+\begin{itemize}
+    \item A 1-ary predicate can be seen as a property
+    \item A n-ary predicate can be seen as a relation
+\end{itemize}
+
+\subsubsection{Free/bound variables}
+Let $F$ be a formula and $X$ a variable. An occurance of $X$ in $F$ is said to be bound to $F$ if
+\begin{itemize}
+    \item The occurence follows a quantifier, or
+    \item The occurence is part of a subformula that follows $\forall{X}$ or $\exists{X}$.
+\end{itemize}
+If the occurence of $X$ is not bound it is said to be free.
+
+\subsubsection{Ground term/formula}
+A term or formula is said to be ground if it does not contain any variables.
+
+\subsubsection{Closed formula}
+A closed formula is a formula that does not contain any free variables.
+
+\subsubsection{Atomic formula (atom)}
+An atomic formula is a logical statement (a predicate applied to a tuple of terms without logical connectives).
+\begin{itemize} % https://math.stackexchange.com/questions/1110656/difference-between-terms-and-atomic-formula
+  \item If $P$ is an $n$-ary predicate symbol and $t_1, t_2, \ldots, t_n$ are terms, then $P(t_1,t_2,\ldots,t_n)$ is an atomic formula.
+\end{itemize}
+
+
+
+\subsection{Interpretation}
+The interpretation of constants, functors and predicate symbols provide a basis for assigning truth values to the formulas.
+
+An interpretation $\mathcal{J}$ of an alphabet $\mathcal{A}$ is a non-empty domain $\mathcal{D}$ (or $|\mathcal{J}|$) and a mapping that associates
+\begin{itemize}
+    \item Each constanct $c\in\mathcal{A}$ with an element $c_\mathcal{J}\in\mathcal{D}$
+    \item Each $n$-ary functor $f\in\mathcal{A}$ with a function $f_\mathcal{J}:\mathcal{D}^n\rightarrow D$
+    \item Each $n$-ary predicate symbol $p\in\mathcal{A}$ with a relation $p_\mathcal{J}\subseteq\mathcal{D}\times\ldots\times\mathcal{D}$ ($n$ times)
+\end{itemize}
+
+\subsubsection{Valuation}
+A valuation $\varphi$ is a mapping from variables of the alphabet to the domain of an interpretation. It is a function that assigns objects of an interpretation to the variables of the language.
+
+Let $\mathcal{J}$ be an interpretation, $\varphi$ a valuation and $t$ a term. Then $\varphi_\mathcal{J}(t)$ is an element in $\mathcal{D}$ defined as
+\begin{itemize}
+    \item If $t$ is a constant $c$ then $\varphi_\mathcal{J}(t) := c_\mathcal{J}$
+    \item If $t$ is a variable $X$ then $\varphi_\mathcal{J}(t) := \varphi(X)$
+    \item If $t$ is of the form $f(t_1,\ldots,t_n)$ then $\varphi_\mathcal{J}(t) := f_\mathcal{J}(\varphi_\mathcal{J}(t_1),\ldots,\varphi_\mathcal{J}(t_n))$
+\end{itemize}
+$\varphi[X\mapsto t]$ denotes the valuation which is identical to $\varphi$ except that $X$ maps to $t$.
+
+
+
+\subsection{Model}
+An interpretation $\mathcal{J}$ is said to be a model of a set of closed formulas $P$ iff every formula $F\in P$ is true in $\mathcal{J}$.
+
+\subsubsection{Satisfiability}
+A satisfiable set of closed formulas has atleast one model.
+
+\subsection{Logical consequence}
+A closed formula $F$ is called a logical consequence of a set of closed formulas $P$ iff F is true in every model of $P$ ($P\models F$).
+
+A way to prove $P\models F$ is to show that $\lnot F$ is false in every model of $P$. That $P\cup\{\lnot F\}$ is unsatisfiable.
+\subsection{Soundness, completeness}
+\begin{itemize}
+    \item Inference rules are said to be sound if what is possible to derive with them ($P\vdash F$) are also logical consequences ($P\models F$).
+    \item Inference rules are said to be complete if they make every logical consequences ($P\models F$) derivable ($P\vdash F$) using the rules.
+\end{itemize}
+
+\section{Definite programs}
+A definitie program is a finite set of definite clauses.
+
+\subsection{Syntax (rules, facts, queries/goals)}
+
+\subsubsection{Definite clause}
+A definite clause is a clause that contains exactly one positive literal.
+\begin{itemize}
+    \item $\forall(A_0\lor\lnot A_1\lor\ldots\lor\lnot A_n)$ which is equivalent to
+    \item $A_0\leftarrow A_1,\ldots,A_n$
+\end{itemize}
+
+\subsubsection{Rule}
+A rule is a definite clause where $n\geq1$.
+\begin{itemize}
+    \item $A_0\leftarrow A_1,\ldots,A_n$
+\end{itemize}
+
+\subsubsection{Fact}
+A fact is a definite clause where $n = 0$.
+\begin{itemize}
+    \item $A_0$
+\end{itemize}
+
+\subsubsection{Queries/Goals}
+Queries and goals are definite clauses with no positive literals.
+\begin{itemize}
+    \item $\leftarrow A_1,\ldots,A_n$
+\end{itemize}
+The difference between a query and a goal is that a query asks a question (contains variables) and a goal verifies a statement. A query returns solutions with respect to variables, a goal answers yes or no.
+
+\pagebreak
+
+\subsection{Proof trees}
+A proof tree (implication tree) for a definitie program $P$ is a finite tree in which
+\begin{itemize}
+    \item $B_1,\ldots,B_n$ are children of a node $B$ $\Rightarrow$
+    \\$B\leftarrow B_1,\ldots,B_n$ is an instance of a fact of $P$.
+\end{itemize}
+For any definite program $P$,atoms $A_1,\ldots,A_n$ and $A$
+\begin{itemize}
+    \item $P\models A_1,\ldots,A_n$ iff $P\models A_1$, and $\ldots$, and $P\models A_n$
+    \item $P\models A$ iff $A$ is the root of some proof tree for $P$. 
+\end{itemize}
+\textbf{Example}
+Let the program be
+
+
+\begin{tabular}{l l}
+    $c(X,Z) \leftarrow e(X,Z)$ & $e(a,b). e(d,f)$
+    \\
+    $c(X,Z) \leftarrow e(X,Y),c(Y,Z)$ & $e(b,d)$
+\end{tabular}
+
+
+Two examples of proof trees of the program are
+
+
+\begin{tabular}{m{3cm} m{1cm} m{3cm}}
+    Tree 1 & Tree 2\\
+    \Tree [.$c(a,d)$ $e(a,b)$ [.$c(b,d)$ $e(b,d)$ ] ] & \Tree[.$c(a,f)$ $e(a,b)$ [.$c(b,f)$ $e(b,d)$ [.$c(d,f)$ $e(d,f)$ ] ] ]
+    \end{tabular}
+
+
+\subsection{Atomic logical consequences of a program (proof tree roots)}
+The atomic logical consequences of $P$ are all the atomic formulae which may be obtained from the facts of $P$ by applying modus ponens.
+
+For sets $J$ of possible non-ground atoms
+\begin{itemize}
+    \item $T_P^c(J)=\{A\mid A\leftarrow A_1,\ldots,A_n\textmd{ is an instance of a }C\in P, \{A_1,\ldots,A_n\}\subseteq J\}$
+    \begin{itemize}
+        \item  $(T^c_P)^i(\emptyset)$ denotes the roots of proof trees of height less than $i$.
+    \end{itemize}
+\end{itemize}
+Let $PTR(P)$ be the \textbf{proof tree roots} of $P$. Then
+\begin{itemize}
+    \item $PTR(P) = \bigcup\limits_{i=1}^\infty(T^c_P)^i(\emptyset)$
+\end{itemize}
+
+\subsection{Correctness / completeness (of a program) w.r.t. a specification}
+
+\subsection{Incorrectness diagnosis, incompleteness diagnosis}
+
+\pagebreak
+
+\subsection{Herbrand universe/base/interpretation}
+Let $\mathcal{A}$ be an alphabet with at least one constant symbol
+\begin{itemize}
+  \item The \textbf{Herbrand universe of $\mathcal{A}$} ($U_\mathcal{A}$) is the set of all ground terms constructed from the alphabets functors and constants.
+  \item The \textbf{Herbrand base of $\mathcal{A}$} ($B_\mathcal{A}$) is the set of all ground, atomic formulas over the alphabet [all the predicates and every combination of the elements in the universe as input].
+\end{itemize}
+The Herbrand universe and base are (for our purposes) defined for a given program $P$. The alphabet is assumed to contain the symbols that appear in $P$.
+\begin{itemize}
+  \item The \textbf{Herbrand interpretation of $P$} is an interpretation $\mathcal{J}$ that
+  \begin{itemize}
+    \item The domain of $\mathcal{J}$ is $U_p$
+    \item For every constant $c$, $c_\mathcal{J}$ is defined as $c$
+    \item For every $n$-ary functor $f$ the function $f_\mathcal{J}$ is defined as \\$f_\mathcal{J}(x_1,\ldots,x_n):=f(x_1,\ldots,x_n)$
+    \item For every $n$-ary predicate symbol $p$, $p_\mathcal{J}$ is a subset of $U^n_P$
+  \end{itemize}
+\end{itemize}
+The Herbrand interpretation has predefined meanings of functors and constants. In order to specify a Herbrand interpretation it suffices to list the relations associated with the predicate symbol.
+
+\textbf{Example} For an $n$-ary predicate symbol $p$ and a Herbrand interpretation $\mathcal{J}$ the meaning of $p_\mathcal{J}$ consists of the set $\{(t_1,\ldots,t_n)\in U^n_P\mid \mathcal{J}\models p(t_1,\ldots,t_n)\}$
+\subsection{Least Herbrand model}
+\begin{itemize}
+  \item A \textbf{Herbrand model of $P$} is a Herbrand interpretation $\mathcal{J}$ which is a model of every formula $F\in P$ $(\mathcal{J}\models F)$.
+  \item The \textbf{least Herbrand Model of $P$} ($M_P$) is the set of all ground atomic logical consequences of the program ($M_P = \{A\in B_P \mid P\models A\}$).
+\end{itemize}
+\subsection{Immediate consequence operator}
+\section{SLD-resolution}
+
+\subsection{Substitutions}
+A substitution is a finite set of pairs of terms $\{X_1/t_1,\ldots,X_n/t_n\}$ where
+\begin{itemize}
+    \item $t_i$ is a term
+    \item $X_i$ is a variable
+    \item $X_i\not=t_i$ and $X_i\not=X_j$
+\end{itemize}
+The \textbf{empty substitution} is denoted $\epsilon$.
+
+\subsubsection{Application}
+
+$X\theta$ denotes the application of a substitution $\theta$ to a variable $X$.
+
+$X\theta=\begin{cases}
+    t; X/t\in\theta\\
+    X; \textmd{else}
+\end{cases}
+$
+
+\subsubsection{Composition}
+Let $\theta$ and $\sigma$ be two substitutions
+\begin{itemize}
+    \item $\theta=\{X_1/s_1,\ldots,X_n/s_n\}$
+    \item $\sigma=\{Y_1/t_1,\ldots,Y_n/t_n\}$
+\end{itemize}
+The composition $\theta\sigma$ is obtained from $\{X_1/s_1\sigma,\ldots,X_m/s_m\sigma, Y_1/t_1,\ldots,Y_n/t_n\}$ by
+\begin{itemize}
+    \item Removing all $X_i/s_i\sigma$ where $X_i=s_i\sigma$
+    \item Removing all $Y_j/t_j$ for which $Y_j\in\{X_1,\ldots,X_m\}$
+\end{itemize}
+
+\subsection{Unifier}
+
+A unifier is a substitution $\theta$ such that applying $\theta$ to terms $s, t$ makes them identical ($\theta s=\theta t$). $\theta$ is a unifier of $s, t$. The search for a unifier is the process of solving $s \doteq t$.
+
+
+\subsubsection{Generality of substitutions}
+A substitution $\theta$ is more general than a substitution $\sigma$ ($sigma\preceq\theta$) iff there exists a substitution $\omega$ such that $\sigma=\theta\omega$
+
+\subsubsection{Most general unifier}
+A unifier $\theta$ is said to be a mgu of two terms iff $\theta$ is more general than any other unifier of the terms.
+
+\subsubsection{Solved form}
+A set of equations $\{X_1\doteq t_1,\ldots,X_n\doteq t_n\}$ is said to be in solved form iff $X_1,\ldots,X_n$ are distinct variables none of which appear in $t_1,\ldots,t_n$.
+
+If  $\{X_1\doteq t_1,\ldots,X_n\doteq t_n\}$ is in solved form then $\theta=\{X_1/t_1,\ldots,X_n/t_n\}$ is an mgu of $(X_1,\ldots,X_n)$ and $(t_1,\ldots,t_n)$.
+
+\subsection{Unification algorithm}
+\begin{itemize}
+    \item \textbf{Input} A set of $\varepsilon$ equations
+    \item \textbf{Output} An equivalent set of equations in solved form or failure
+    \item \textbf{Repeat until no action is possible on any equation in $\varepsilon$}
+    \begin{itemize}
+        \item Select an arbitrary $s\doteq t\in\varepsilon$
+        \item \textbf{(Case 1)} $f(s_1,\ldots,s_n)\doteq f(t_1,\ldots,t_n), n\geq0$
+        \begin{itemize}
+            \item Replace equation by $s_1\doteq t_1,\ldots,s_n\doteq t_n$
+        \end{itemize}
+        \item \textbf{(Case 2)} $f(s_1,\ldots,s_n)\doteq g(t_1,\ldots,t_n), f/m\not=g/n$
+        \begin{itemize}
+            \item Halt with failure
+        \end{itemize}
+        \item \textbf{(Case 3)} $X\doteq X$
+        \begin{itemize}
+            \item Remove the equation
+        \end{itemize}
+        \item \textbf{(Case 4)} $t\doteq X$, $t$ is not a variable
+        \begin{itemize}
+            \item Replace the equation by $X\doteq t$
+        \end{itemize}
+        \item \textbf{(Case 5)} $X\doteq t$, $X\not=t$, $X$ occurs more than once in $\varepsilon$
+        \begin{itemize}
+            \item \textbf{(Case 5a)} $X$ is a proper subterm of $t$
+            \begin{itemize}
+                \item Halt with failure
+            \end{itemize}
+            \item \textbf{(Case 5b)} 
+            \begin{itemize}
+                \item Replace all other occurences of $X$ by $t$
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+Due to inefficiency of occurs check (Case 5a) it is often removed.
+
+In Prolog this check is omitted which means that Case 5b is always executed when $X\doteq f(X)$. An infinite tree is constructed, $X\doteq f(f(...))$ (actually a graph with a cycle is built).
+
+\subsubsection{Renaming}
+A substitution $\{X_1/Y_1,\ldots,X_n/Y_n\}$ is called a renaming substitution iff $Y_1,\ldots,Y_n$ is a permutation of $X_1,\ldots,X_n$
+
+If $\theta=\{X_1/Y_1,\ldots,X_n/Y_n\}$ is a renaming then $\theta^{-1}=\{Y_1/X_1,\ldots,Y_n/X_n\}$ is its reverse. $\theta\theta^{-1}=\epsilon$
+
+\subsection{SLD-resolution}
+Given a program $P$, compute answers for an initial query $Q_0$.
+The computation step is done by
+\begin{itemize}
+    \item $Q = A_1,\ldots,\boldsymbol{A_i},\ldots,A_m$ - a query
+    \item $C = \boldsymbol{H}\leftarrow B_i,\ldots,B_n$ - a variant of a clause of $P$
+    \item $\theta$ - mgu of $\boldsymbol{A_i}$ and $\boldsymbol{H}$
+    \\
+    \item $Q^\prime=(A_i,\ldots,A_{i-1},\boldsymbol{B_1,\ldots,B_n},A_{i+1},\ldots,A_m)\theta$
+\end{itemize}
+Note that $P\models Q^\prime \rightarrow Q\theta$
+
+\subsection{SLD-derivation}
+An SLD-derivation is a sequence of queries, clauses and mgu:s
+\begin{itemize}
+    \item $Q_0-_{\theta_1}^{C_1}\rightarrow Q_1-_{\theta_2}^{C_2}\rightarrow Q_2\ldots Q_{n-1}-_{\theta_n}^{C_n}\rightarrow Q_n$
+\end{itemize}
+Where
+\begin{itemize}
+    \item Each $C_i$ is a variant of a clause of $P$
+    \item Each $Q_i$ is a resolvent of $Q_{i-1}$ and $C_i$ with mgu $\theta_i$
+    \item No variables of $C_i$ occurs in $Q_0,\ldots,Q_{i-1}$, $\theta_1,\ldots,\theta_{i-1}$ and $C_1,\ldots,C_{i-1}$ 
+    \\(the variables in $C_i$ are new)
+\end{itemize}
+Obtaining a clause variant satisfying the last requirement requires renaming.
+
+Note that $P\models Q_n\rightarrow Q_0\theta_1\ldots\theta_n$. A derivation is successful if $Q_n$ is true, then $P\models Q_0\theta_1\ldots\theta_n$. $P\models Q_0\theta_1\ldots\theta_n$ is the computated answer for $P$ and $Q_0$.
+
+An SLD-resolution is sound since each computed answer is a correct answer. It can be seen as an attempt to construct a proof tree for some instance of $A_i$ top-down.
+\begin{itemize}
+    \item $Q_j$ leaves - a partially constructed tree
+    \item Other leaves - instances of facts of the program
+    \item $A\theta_1\ldots\theta_j$ - the root of the tree
+    \item $Q_0-_{\theta_1}^{C_1}\rightarrow Q_1-_{\theta_2}^{C_2}\rightarrow Q_2\ldots-_{\theta_n}^{C_n}\rightarrow \blacksquare$ - a successful derivaton
+\end{itemize}
+
+\pagebreak
+
+\textbf{Example}
+
+Let the program $P$ be
+
+\begin{tabular}{l l}
+    $c(X,Z) \leftarrow e(X,Z)$ & $e(a,b). e(d,f)$
+    \\
+    $c(X,Z) \leftarrow e(X,Y),c(Y,Z)$ & $e(b,d)$
+\end{tabular}
+
+Then
+
+\begin{tabular}{l | l}
+    $Q_0=c(X,Y)$ & $C_1=c(X^\prime, Z^\prime)\leftarrow e(X^\prime,Y^\prime),c(Y^\prime,Z^\prime)$
+    \\
+    & $\theta_1=\{X^\prime/X, Z^\prime/Y\}$
+    \\\hline
+    $Q_1=e(X,Y^\prime), c(Y^\prime,Y)$ & $C_2=e(a,b)$
+    \\
+    & $\theta_2=\{X/a, Y^\prime/b\}$
+    \\\hline
+    $Q_2=c(b,Y)$ & $C_3=c(X^{\prime\prime}, Z^{\prime\prime})\leftarrow e(X^{\prime\prime},Y^{\prime\prime})$
+    \\
+    & $\theta_3=\{X^{\prime\prime}/b, Z^{\prime\prime}/Y\}$
+    \\\hline
+    $Q_3=c(X,Y)$ & $C_4=e(b,d)$
+    \\
+    & $\theta_4=\{Y/d\}$
+    \\\hline
+    $Q_5=\blacksquare$
+\end{tabular}
+\subsection{SLD-tree}
+For an SLD-tree for program $P$, query $Q$ via (computed with) rule $\mathcal{R}$ the following is true
+\begin{itemize}
+    \item Branches are SLD-derivations for $P, Q$ via $\mathcal{R}$
+    \item A node $Q^\prime$ with $A$ selected has exactly one child for each applicable clause $C$ of $P$. The child is a resolvent of $Q^\prime$ and a variant of $C$ with respect to $A$
+\end{itemize}
+\subsection{Selection rule (computation rule)}
+A function selecting atom in a query $Q_i$ to be resolved is called a selection rule or a computation rule. The Prolog selection rule selects the first atom of the query to be resolved.
+
+
+\subsection{Soundness and completeness}
+
+\section{Negation}
+\subsection{Closed world assumption}
+\subsection{Negation as (finite) failure}
+\subsection{Program completion}
+\subsection{General logic programs}
+\subsection{SLDNF-resolution, SLDNF-forest}
+\subsubsection{successful derivation, failed tree, floundering}
+
+\section{Definite clause grammars}
+\subsection{Translation to Prolog}
+
+\section{Prolog}
+\subsection{Terms as the data structures of logic programming}
+\subsection{Recursive data structures}
+\subsection{Lists and difference lists}
+\subsection{Constraints (especially FD-constraints)}
+\subsection{The cut - don't use it.}
+
+\end{document}

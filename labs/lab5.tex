@@ -1,0 +1,19 @@
+\section{Lab 5}
+\subsection{Exercise 1}
+\lstinputlisting[language=Prolog]{./5/ex1.pl}
+\pagebreak
+\subsubsection{Queries}
+\begin{lstlisting}[language=Prolog]
+| ?- schedule(Tasks, Cost).
++-----------------------------------------
+| Persons: 4 | Duration: 4 | Cost: 16
++-----------------------------------------
+| ID: a | Start: 1 | End: 3
+| ID: b | Start: 0 | End: 1
+| ID: c | Start: 1 | End: 3
+| ID: d | Start: 3 | End: 4
++-----------------------------------------
+Tasks = [task(1,2,3,2,0),task(0,1,1,4,0),task(1,2,3,2,0),task(3,1,4,1,0)],
+Cost = 16 ? ;
+no
+\end{lstlisting}
